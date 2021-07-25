@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31229.75
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetTime", "SetTime\SetTime.csproj", "{8A0CA265-EB66-4A62-9C92-D8BC11FF4316}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetTime", "SetTime\SetTime.csproj", "{8A0CA265-EB66-4A62-9C92-D8BC11FF4316}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

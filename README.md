@@ -1,6 +1,6 @@
 # SetTime
 
-Simple .Net Core app to read the time and set it locally.
+Simple .Net Core app to read the time from an ntp server and set it locally. Actually, it tries several ntp servers and takes the fastest.
 
 ## Why?
 
