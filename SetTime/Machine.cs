@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -45,22 +46,24 @@ namespace SetTime
                 if (!IsAdmin())
                 {
                     Console.WriteLine("I'd like to help, but you haven't got admin rights");
-                    Console.WriteLine("Try a console window with admin rights and run " + Assembly.GetExecutingAssembly().Location);
+                    Console.WriteLine("Try a console window with admin rights and run " + Process.GetCurrentProcess().MainModule.FileName);
                 }
                 else
                 {
                     // Does the user want to change it?
                     Console.WriteLine("Press 'R' to set to Remote, any other key to ignore");
                     ConsoleKeyInfo consoleKeyInfo;
+                    // Wait for them to choose
                     while (!Console.KeyAvailable)
                     {
                         Console.Write('.');
                         Thread.Sleep(1000);
                     }
                     consoleKeyInfo = Console.ReadKey(true);
+                    // If they want to get the remote time ...
                     if (consoleKeyInfo.Key.ToString().ToUpper() == "R")
                     {
-                        // Get the remote time again - we may have waited a while since the last fetch
+                        // Fetch the remote time again - we may have waited a while since the original request
                         remoteNow = GetRemoteTime();
 
                         TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
@@ -78,6 +81,8 @@ namespace SetTime
             {
                 Console.WriteLine("Bye");
             }
+            Console.WriteLine("Press any key to finish");
+            Console.ReadKey();
         }
 
         /// <summary> Do we have admin rights?</summary>
