@@ -39,8 +39,8 @@ namespace SetTime
             }
             Console.WriteLine(sb);
 
-            // If we're more than 45 seconds out, we need to do something
-            if (Math.Abs(timeDiff.TotalSeconds) > 45)
+            // If we're more than 15 seconds out, we need to do something
+            if (Math.Abs(timeDiff.TotalSeconds) > 15)
             {
                 // But not unless we are admin
                 if (!IsAdmin())
