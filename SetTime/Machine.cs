@@ -14,11 +14,13 @@ namespace SetTime
     {
         public void Run()
         {
-            // Get the times and compare
+            // Get local and remote times and compare
             DateTime remoteNow = GetRemoteTime();
             DateTime localNow = DateTime.Now;
             Console.WriteLine("Remote time is  " + remoteNow.ToLongDateString() + " " + remoteNow.ToLongTimeString());
             Console.WriteLine("Local time is   " + localNow.ToLongDateString() + " " + localNow.ToLongTimeString());
+
+            // Calc the diff
             TimeSpan timeDiff = remoteNow - localNow;
             // Display the difference
             StringBuilder sb = new StringBuilder();

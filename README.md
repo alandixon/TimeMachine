@@ -12,7 +12,7 @@ It does in the end, but because the time is so far out, it seems unhappy to do i
 
 ## Portability
 
-The code is .Net Core 3.1, apart from the time setting which is an admin level interop call on kernel32.dll, so is only compatible with Windows.
+The code is .Net 9.0 apart from the actual time setting which is an admin level interop call on kernel32.dll, so is only compatible with Windows.
 
 ## Permissions
 
