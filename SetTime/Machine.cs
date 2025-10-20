@@ -2,11 +2,9 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SetTime
@@ -14,11 +12,9 @@ namespace SetTime
     // Derived from this rather neat answer at https://stackoverflow.com/questions/40627941/asynchronous-operations-in-a-console-application/40630963#40630963
     public class Machine
     {
-        public bool ConsoleKeyInfo { get; private set; }
-
         public void Run()
         {
-            // get the times and compare
+            // Get the times and compare
             DateTime remoteNow = GetRemoteTime();
             DateTime localNow = DateTime.Now;
             Console.WriteLine("Remote time is  " + remoteNow.ToLongDateString() + " " + remoteNow.ToLongTimeString());
@@ -39,50 +35,23 @@ namespace SetTime
             }
             Console.WriteLine(sb);
 
-            // If we're more than 15 seconds out, we need to do something
-            if (Math.Abs(timeDiff.TotalSeconds) > 15)
+            // Can't set time if we aren't admin
+            if (!IsAdmin())
             {
-                // But not unless we are admin
-                if (!IsAdmin())
-                {
-                    Console.WriteLine("I'd like to help, but you haven't got admin rights");
-                    Console.WriteLine("Try a console window with admin rights and run " + Process.GetCurrentProcess().MainModule.FileName);
-                }
-                else
-                {
-                    // Does the user want to change it?
-                    Console.WriteLine("Press 'R' to set to Remote, any other key to ignore");
-                    ConsoleKeyInfo consoleKeyInfo;
-                    // Wait for them to choose
-                    while (!Console.KeyAvailable)
-                    {
-                        Console.Write('.');
-                        Thread.Sleep(1000);
-                    }
-                    consoleKeyInfo = Console.ReadKey(true);
-                    // If they want to get the remote time ...
-                    if (consoleKeyInfo.Key.ToString().ToUpper() == "R")
-                    {
-                        // Fetch the remote time again - we may have waited a while since the original request
-                        remoteNow = GetRemoteTime();
-
-                        TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
-                        TimeSpan offsetAmount = timeZoneInfo.GetUtcOffset(remoteNow);
-                        DateTime timeToUse = (remoteNow - offsetAmount);
-
-                        SYSTEMTIME systime = new SYSTEMTIME(timeToUse);
-                        SetSystemTime(ref systime);
-                        Console.WriteLine();
-                        Console.WriteLine("Local time set to  " + remoteNow.ToLongDateString() + " " + remoteNow.ToLongTimeString());
-                    }
-                }
+                Console.WriteLine("I'd like to help, but you haven't got admin rights");
+                Console.WriteLine("Try a console window with admin rights and run " + Process.GetCurrentProcess().MainModule.FileName);
             }
             else
             {
-                Console.WriteLine("Bye");
-            }
-            Console.WriteLine("Press any key to finish");
-            Console.ReadKey();
+                TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
+                TimeSpan offsetAmount = timeZoneInfo.GetUtcOffset(remoteNow);
+                DateTime timeToUse = (remoteNow - offsetAmount);
+
+                SYSTEMTIME systime = new SYSTEMTIME(timeToUse);
+                SetSystemTime(ref systime);
+                Console.WriteLine("Local time set to  " + remoteNow.ToLongDateString() + " " + remoteNow.ToLongTimeString());
+           }
+
         }
 
         /// <summary> Do we have admin rights?</summary>
