@@ -12,6 +12,9 @@ namespace SetTime
     // Derived from this rather neat answer at https://stackoverflow.com/questions/40627941/asynchronous-operations-in-a-console-application/40630963#40630963
     public class Machine
     {
+        private static byte NTPv3 = 0x1B;
+        private static byte NTPv4ClientMode = 0x23;
+
         public void Run()
         {
             // Get local and remote times and compare
@@ -113,12 +116,17 @@ namespace SetTime
 
         public static async Task<DateTime> GetNetworkTime(IPEndPoint ep)
         {
-            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+            using (Socket socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp))
             {
+                // Enable DualMode so it can fall back to IPv4 destinations transparently
+                socket.DualMode = true;
+                // Bind to an ephemeral local port
+                socket.Bind(new IPEndPoint(IPAddress.IPv6Any, 0));
+
                 await Task.Factory.FromAsync(socket.BeginConnect, socket.EndConnect, ep, null);
 
                 byte[] ntpData = new byte[48]; // RFC 2030 
-                ntpData[0] = 0x1B;
+                ntpData[0] = NTPv4ClientMode;
 
                 await Task.Factory.FromAsync(
                     socket.BeginSend(ntpData, 0, ntpData.Length, SocketFlags.None, null, null),
